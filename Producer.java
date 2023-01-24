@@ -1,33 +1,60 @@
 
-public class Producer<T> implements Runnable {
+import java.util.Random;
+
+public class Producer<T>  {
 
     private CustomPriorityQueue<T> queue;
+    private Integer priority;
+    private Random rand;
+    private Integer upperbound;
+    private Item<T> item;
 
     public Producer(CustomPriorityQueue<T> queue){
         this.queue = queue;
+        this.rand = new Random();
     }
-    @Override
-    public void run() {
-        Item<T> a = new Item<>(1);
-        Item<T> b = new Item<>(1);
-        Item<T> c = new Item<>(1);
-        Item<T> d = new Item<>(2);
-        Item<T> e = new Item<>(7);
-        Item<T> f = new Item<>(1);
-        
-       try {
-        Thread.sleep(1000);
-        queue.enqueue(a);
-        queue.enqueue(b);
-        queue.enqueue(c);
-        queue.enqueue(d);
-        queue.enqueue(e);
-        queue.enqueue(f);
-        
-       } catch (Exception exp) {
-        System.out.print(exp);
-       }
+
+    public synchronized void produce() throws InterruptedException {
        
+        while (true) {
+            
+            while(queue.atMaxCapacity()) {
+               System.out.println("\nWaiting for Queue to Dequeue Items\n");
+               wait();
+            }
+
+            item = createItem();
+            try {
+                Thread.sleep(2500);
+                queue.enqueue(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            notify();
+        }
     }
-    
+
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    // @Override
+    // public void run() {
+    //    try {
+    //     item = createItem();
+    //     Thread.sleep(10000);
+    //     queue.enqueue(item);
+
+    //    } catch (Exception exp) {
+    //     System.out.print(exp);
+    //    } 
+    // }
+
+    public Item<T> createItem(){
+        priority = 1 + rand.nextInt(upperbound + 1);
+        item = new Item<>(priority, "Priority: " + priority + "\n");
+        return item;
+
+    }
 }

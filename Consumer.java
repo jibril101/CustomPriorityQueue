@@ -1,23 +1,32 @@
 
 
 
-public class Consumer<T> implements Runnable {
+public class Consumer<T> {
     private CustomPriorityQueue<T> queue;
+    
     public Consumer(CustomPriorityQueue<T> queue){
         this.queue = queue;
     }
-    @Override
-    public void run() {
-        try {
-            //Thread.sleep(1000);
-            System.out.print(queue.dequeue().getPriority() + "\n");
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-        } catch (Exception e) {
-            // TODO: handle exception
+
+    /**
+     * @throws InterruptedException
+     */
+    public synchronized void consume() throws InterruptedException {
+
+        while(true) {
+            
+            while(queue.isEmpty()) {
+               System.out.print("\n Queue is Empty \n");
+               wait();
+            }
+
+            try {
+                Thread.sleep(5000);
+                queue.dequeue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            notify();
         }
     }
 }

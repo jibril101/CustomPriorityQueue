@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.NavigableSet;
 
 
-public class CustomPriorityQueue<T> {
+public class CustomPriorityQueue {
 
     private final Integer capacity; // this is the pre-determined queue size, set when creating the priorityQueue
     private Integer totalItems =0; // keep track of total items in queue
@@ -28,13 +28,12 @@ public class CustomPriorityQueue<T> {
         queues = new TreeMap<>();
         counters = new HashMap<>();
         this.capacity = capacity;
-        this.queueCapacity = new Semaphore(capacity);
     }
     
     /**
      * @param myItem
      */
-    public synchronized void enqueue(Item<T> myItem) throws Exception {
+    public void enqueue(Item<T> myItem) throws Exception {
         /* perform enqueue. If the priority class does not exist then create it
 
            Add a throttle here aswell to prevent overflow of higher priority of items
@@ -47,10 +46,6 @@ public class CustomPriorityQueue<T> {
          */
 
         try{
-
-            //queueCapacity.release();
-
-            // System.out.print("Semaphore " + queueCapacity.availablePermits() + " \n");
             int priority = myItem.getPriority();
             if (!queues.containsKey(priority)) {
                 LinkedList<Item<T>> queue = new LinkedList<>();
@@ -66,7 +61,6 @@ public class CustomPriorityQueue<T> {
             System.out.print("TotalItems " + totalItems + "\n");
             
         } catch(Exception exp) { // make a more speicfic exception
-            // maybe decrement semaphore count here
             exp.printStackTrace();
         }
 
@@ -76,19 +70,19 @@ public class CustomPriorityQueue<T> {
      * @return
      * @throws Exception
      */
-    public synchronized Item<T> dequeue() throws Exception {
+    public Item<T> dequeue() throws Exception {
         /* Assumptions: If X+1 priority class is empty then go to the
         next priority class and so on until you find a non-empty class
         if there are none then return 
         */
-        Item<T> dummy = new Item<>(-1);
+        Item<T> ret_val = null;
         if (totalItems == 0) {
-            return dummy;
+            ret_val = new Item<>(-1, "Queue Empty!!!");
+            return ret_val;
         }
         // queueCapacity.acquire();
         // System.out.print("Capacity: " + queueCapacity.availablePermits() + "\n");
         // System.out.print("In dequeue " + "\n");
-        Item<T> ret_val = null;
         // set priority class to start with
         Set<Integer> priorityLevels = queues.keySet();
         try {
@@ -133,15 +127,16 @@ public class CustomPriorityQueue<T> {
         }
         if (ret_val == null) {
             // case, x + 1 or any other lower priority not avail. Throw exception
-            System.out.println("No X + 1 or lower priority available in the Queue");
+            ret_val = new Item<>(-1, "\n No X + 1 Or Lower Priority Available In The Queue !!!\n");
         }
-        System.out.print( "Totalitems: " + totalItems + "\n");
         return ret_val;
     }
 
-    public synchronized boolean atMaxCapacity(){
+    public boolean atMaxCapacity(){
         // Check is the queue has reach maximum capacity
         return totalItems > capacity;
     }
-
+    public boolean isEmpty(){
+        return totalItems == 0;
+    }
 }
