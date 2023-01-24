@@ -18,8 +18,9 @@ public class ProducerConsumer<T>  {
         while (true) {
 
             synchronized(this) {
+                Thread.sleep(500);
                 while(queue.atMaxCapacity()) {
-                    System.out.print("reached capicity\n");
+                    System.out.print("-------------QUEUE IS FULL-------WAITING FOR DEQUEU--------\n");
                     item = new Item<>(-1, "QUEUE FULL");
                     wait();
                 }
@@ -27,11 +28,11 @@ public class ProducerConsumer<T>  {
                 item = createItem();
                 try {
                     queue.enqueue(item);
-                    System.out.print(queue.returnQueue().get(item.getPriority()) + "\n");
+                    //System.out.print(queue.returnQueue().get(item.getPriority()) + "\n");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.print("This should wake up the Dequeue\n");
+                //System.out.print("This should wake up the Dequeue\n");
                 
                 notifyAll();
             }

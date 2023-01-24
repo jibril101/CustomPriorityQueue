@@ -53,7 +53,8 @@ public class CustomPriorityQueue<T> {
             }
             totalItems = totalItems + 1;
 
-            System.out.print("Enqueueing " + priority + "\n");
+            //System.out.print("Enqueueing " + priority + "\n");
+            System.out.print(priority + "  ");
             
         } catch(Exception exp) { // make a more speicfic exception
             // maybe decrement semaphore count here
@@ -101,12 +102,15 @@ public class CustomPriorityQueue<T> {
             if (cond) { //&& counters.get(priority) < throttleRate)
                 Item<T> item = queues.get(priority).poll();
                 counters.compute(priority,(k,v) -> (v + 1));
-                System.out.print("Dequeueing " + priority + "\n");
+                // System.out.print("Dequeueing " + priority + "\n");
+                System.out.print(priority + "  ");
                 ret_val = item;
+                //System.out.print("Current Count for: " + priority + " is " + counters.get(priority) + "\n");
                 if (counters.get(priority) == throttleRate) { 
                     // set dequeue state for next dequeue state to priority class x + 1 and set counter to 0
                     dequeueState = priority + 1;
                     counters.replace(priority,0);
+                    //System.out.println("Throttle Reached for :" + priority + "\n");
                     // check if this priority class exist
                 } else {
                     dequeueState = 1;
@@ -121,7 +125,7 @@ public class CustomPriorityQueue<T> {
         if (ret_val == null) {
             // case, x + 1 or any other lower priority not avail. Throw exception
             ret_val = new Item<>(-1, "\nNo X + 1 Or Lower Priority Available In The Queue !!!\n");
-            System.out.print("******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
+            System.out.print("\n******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
         }
         
         Thread.sleep(3000);
