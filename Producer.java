@@ -16,13 +16,13 @@ public class Producer<T> implements Runnable {
         Item<T> f = new Item<>(1);
         
        try {
+        Thread.sleep(1000);
         queue.enqueue(a);
         queue.enqueue(b);
         queue.enqueue(c);
         queue.enqueue(d);
         queue.enqueue(e);
         queue.enqueue(f);
-
         
        } catch (Exception exp) {
         System.out.print(exp);

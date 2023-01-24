@@ -81,9 +81,9 @@ public class CustomPriorityQueue<T> {
         next priority class and so on until you find a non-empty class
         if there are none then return 
         */
-
+        Item<T> dummy = new Item<>(-1);
         if (totalItems == 0) {
-            throw new Exception();
+            return dummy;
         }
         // queueCapacity.acquire();
         // System.out.print("Capacity: " + queueCapacity.availablePermits() + "\n");
