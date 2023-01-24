@@ -15,8 +15,8 @@ public class main {
         // thread1.start();
         // Thread thread2 = new Thread(consumer);
         // thread2.start();
-
-
+        
+        
         Producer<T> producer = new Producer(queue);
         Consumer<T> consumer = new Consumer(queue);
         Thread threadP = new Thread(producer, "producer");
