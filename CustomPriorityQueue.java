@@ -133,5 +133,7 @@ public class CustomPriorityQueue<T> {
     public boolean isEmpty(){
         return totalItems == 0;
     }
-
+    public TreeMap<Integer, Queue<Item<T>>> returnQueue(){
+        return queues;
+    }
 }

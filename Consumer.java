@@ -11,25 +11,25 @@ public class Consumer<T> {
     /**
      * @throws InterruptedException
      */
-    public Item<T> consume() throws InterruptedException {
+    public synchronized Item<T> consume() throws InterruptedException {
 
         while(true) {
-            
-            synchronized (this) {
                 
-                if(queue.isEmpty()){
-                    Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
-                    wait();
+                while(queue.isEmpty()){
+                    //Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
+                    try {
+                        System.out.print("------------QUEUE IS EMPTY----------------\n");
+                        wait();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 try {
                     queue.dequeue().getPriority();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                notify();
-
-            }
-
+                notifyAll();
 
         }
     }

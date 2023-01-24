@@ -15,23 +15,22 @@ public class Producer<T>  {
     public synchronized Item<T> produce() throws InterruptedException {
        
         while (true) {
-            
-            synchronized(this) {
 
-                if(queue.atMaxCapacity()) {
-                    System.out.print("reached cap");
+                while(queue.atMaxCapacity()) {
+                    System.out.print("reached capicity\n");
                     item = new Item<>(-1, "QUEUE FULL");
                     wait();
                 }
-            
+                
                 item = createItem();
                 try {
                     queue.enqueue(item);
+                    System.out.print(queue.returnQueue().get(item.getPriority()) + "\n");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                notify();
-            }
+                System.out.print("This should wake up the Dequeue\n");
+                notifyAll();
 
         }
     }
