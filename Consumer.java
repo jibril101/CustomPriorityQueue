@@ -18,7 +18,7 @@ public class Consumer<T> {
                 while(queue.isEmpty()){
                     //Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
                     try {
-                        System.out.print("------------QUEUE IS EMPTY----------------\n");
+                        System.out.print("----------QUEUE IS EMPTY---------WAITING FOR ITEMS---------\n");
                         wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();

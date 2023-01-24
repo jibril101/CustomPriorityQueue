@@ -13,7 +13,7 @@ public class Producer<T>  {
     }
 
     public synchronized Item<T> produce() throws InterruptedException {
-       
+        //Thread.sleep(1000);
         while (true) {
 
                 while(queue.atMaxCapacity()) {
