@@ -14,15 +14,21 @@ public class Producer<T> implements Runnable {
         Item<T> d = new Item<>(2);
         Item<T> e = new Item<>(7);
         Item<T> f = new Item<>(1);
+        Item<T> g = new Item<>(2);
+        Item<T> h = new Item<>(2);
+
         
        try {
-        Thread.sleep(1000);
+        System.out.print("----------------ENQUEUE------------\n");
         queue.enqueue(a);
         queue.enqueue(b);
         queue.enqueue(c);
         queue.enqueue(d);
         queue.enqueue(e);
         queue.enqueue(f);
+        queue.enqueue(g);
+        queue.enqueue(h);
+        Thread.sleep(1000);
         
        } catch (Exception exp) {
         System.out.print(exp);

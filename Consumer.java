@@ -9,15 +9,18 @@ public class Consumer<T> implements Runnable {
     @Override
     public void run() {
         try {
-            //Thread.sleep(1000);
-            System.out.print(queue.dequeue().getPriority() + "\n");
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
-            System.out.print(queue.dequeue().getPriority());
+            Thread.sleep(1000);
+            System.out.print("----------------DEQUEUE------------\n");
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
+            queue.dequeue().getPriority();
         } catch (Exception e) {
-            // TODO: handle exception
-        }
+            e.printStackTrace();
     }
+}
 }
