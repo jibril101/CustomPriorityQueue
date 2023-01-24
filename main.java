@@ -6,7 +6,7 @@ public class main {
      */
     public static <T> void main(String[] args) {
         
-        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(10);
+        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(20);
         // Producer<T> producer = new Producer<>(queue);
         // Consumer<T> consumer = new Consumer<>(queue);
         // Thread thread1 = new Thread(producer);
@@ -14,14 +14,13 @@ public class main {
         // Thread thread2 = new Thread(consumer);
         // thread2.start();
         
-        Producer<T> producer = new Producer(queue);
-        Consumer<T> consumer = new Consumer(queue);
+        ProducerConsumer pc = new ProducerConsumer<>(queue);
         
         Thread threadP = new Thread(new Runnable() {
             
             public void run() {
                 try {
-                    producer.produce();
+                    pc.produce();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -32,7 +31,7 @@ public class main {
             
             public void run() {
                 try {
-                    consumer.consume();
+                    pc.consume();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -122,7 +122,8 @@ public class CustomPriorityQueue<T> {
             // case, x + 1 or any other lower priority not avail. Throw exception
             ret_val = new Item<>(-1, "\nNo X + 1 Or Lower Priority Available In The Queue !!!\n");
         }
-        System.out.print( "Totalitems: " + totalItems + "\n");
+        System.out.print("******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
+        Thread.sleep(3000);
         return ret_val;
     }
 

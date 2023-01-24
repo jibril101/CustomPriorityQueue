@@ -1,19 +1,20 @@
 
 import java.util.Random;
 
-public class Producer<T>  {
+public class ProducerConsumer<T>  {
 
     private CustomPriorityQueue<T> queue;
     private Integer priority;
     private Random rand;
     private Item<T> item;
 
-    public Producer(CustomPriorityQueue<T> queue){
+    public ProducerConsumer(CustomPriorityQueue<T> queue){
         this.queue = queue;
     }
 
     public synchronized Item<T> produce() throws InterruptedException {
         //Thread.sleep(1000);
+       
         while (true) {
 
                 while(queue.atMaxCapacity()) {
@@ -32,6 +33,32 @@ public class Producer<T>  {
                 System.out.print("This should wake up the Dequeue\n");
                 
                 notifyAll();
+
+        }
+    }
+
+    /**
+     * @throws InterruptedException
+     */
+    public synchronized Item<T> consume() throws InterruptedException {
+        Thread.sleep(2000);
+        while(true) {
+
+                while(queue.isEmpty()){
+                    //Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
+                    try {
+                        System.out.print("----------QUEUE IS EMPTY---------WAITING FOR ITEMS---------\n");
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    queue.dequeue().getPriority();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                notify();
 
         }
     }
