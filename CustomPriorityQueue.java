@@ -28,7 +28,7 @@ public class CustomPriorityQueue<T> {
         queues = new TreeMap<>();
         counters = new HashMap<>();
         this.capacity = capacity;
-        this.queueCapacity = new Semaphore(capacity);
+        this.queueCapacity = new Semaphore(0);
     }
     
     /**
@@ -48,6 +48,7 @@ public class CustomPriorityQueue<T> {
 
         try{
             
+            queueCapacity.release();
             // System.out.print("Semaphore " + queueCapacity.availablePermits() + " \n");
             int priority = myItem.getPriority();
             if (!queues.containsKey(priority)) {
@@ -72,15 +73,17 @@ public class CustomPriorityQueue<T> {
 
     /**
      * @return
+     * @throws InterruptedException
      */
-    public synchronized Item<T> dequeue(){
+    public synchronized Item<T> dequeue() throws InterruptedException{
         /* Assumptions: If X+1 priority class is empty then go to the
         next priority class and so on until you find a non-empty class
         if there are none then return 
         */
 
-        // System.out.print("Capacity: " + queueCapacity.availablePermits() + "\n");
-        // System.out.print("In dequeue " + "\n");
+        queueCapacity.acquire();
+        System.out.print("Capacity: " + queueCapacity.availablePermits() + "\n");
+        System.out.print("In dequeue " + "\n");
         Item<T> ret_val = null;
         // set priority class to start with
         Set<Integer> priorityLevels = queues.keySet();
