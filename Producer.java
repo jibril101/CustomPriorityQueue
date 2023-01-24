@@ -30,6 +30,7 @@ public class Producer<T>  {
                     e.printStackTrace();
                 }
                 System.out.print("This should wake up the Dequeue\n");
+                
                 notifyAll();
 
         }
