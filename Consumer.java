@@ -10,7 +10,7 @@ public class Consumer<T> implements Runnable {
     public void run() {
         try {
             Thread.sleep(1000);
-            System.out.print("----------------DEQUEUE------------\n");
+            System.out.print("---------------DEQUEUE------------\n");
             queue.dequeue().getPriority();
             queue.dequeue().getPriority();
             queue.dequeue().getPriority();
