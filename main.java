@@ -6,7 +6,7 @@ public class main {
      */
     public static <T> void main(String[] args) {
         
-        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(20);
+        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(5);
         // Producer<T> producer = new Producer<>(queue);
         // Consumer<T> consumer = new Consumer<>(queue);
         // Thread thread1 = new Thread(producer);

@@ -13,12 +13,11 @@ public class ProducerConsumer<T>  {
     }
 
     public Item<T> produce() throws InterruptedException {
-        //Thread.sleep(1000);
+        Thread.sleep(1000);
        
         while (true) {
 
             synchronized(this) {
-                Thread.sleep(500);
                 while(queue.atMaxCapacity()) {
                     System.out.print("-------------QUEUE IS FULL-------WAITING FOR DEQUEU--------\n");
                     item = new Item<>(-1, "QUEUE FULL");
@@ -47,7 +46,7 @@ public class ProducerConsumer<T>  {
     public Item<T> consume() throws InterruptedException {
         
         synchronized(this) {
-            Thread.sleep(2000);
+            Thread.sleep(100);
             while(true) {
                 
                 while(queue.isEmpty()){
