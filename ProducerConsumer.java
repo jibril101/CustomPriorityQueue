@@ -12,11 +12,12 @@ public class ProducerConsumer<T>  {
         this.queue = queue;
     }
 
-    public synchronized Item<T> produce() throws InterruptedException {
+    public Item<T> produce() throws InterruptedException {
         //Thread.sleep(1000);
        
         while (true) {
 
+            synchronized(this) {
                 while(queue.atMaxCapacity()) {
                     System.out.print("reached capicity\n");
                     item = new Item<>(-1, "QUEUE FULL");
@@ -33,6 +34,8 @@ public class ProducerConsumer<T>  {
                 System.out.print("This should wake up the Dequeue\n");
                 
                 notifyAll();
+            }
+                
 
         }
     }
@@ -40,10 +43,12 @@ public class ProducerConsumer<T>  {
     /**
      * @throws InterruptedException
      */
-    public synchronized Item<T> consume() throws InterruptedException {
-        Thread.sleep(2000);
-        while(true) {
-
+    public Item<T> consume() throws InterruptedException {
+        
+        synchronized(this) {
+            Thread.sleep(2000);
+            while(true) {
+                
                 while(queue.isEmpty()){
                     //Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
                     try {
@@ -58,9 +63,11 @@ public class ProducerConsumer<T>  {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                notify();
+                notifyAll();
 
         }
+        }
+       
     }
 
     public Item<T> createItem() {

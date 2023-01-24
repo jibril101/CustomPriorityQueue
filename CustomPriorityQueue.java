@@ -29,7 +29,7 @@ public class CustomPriorityQueue<T> {
     /**
      * @param myItem
      */
-    public void enqueue(Item<T> myItem) throws Exception {
+    public synchronized void enqueue(Item<T> myItem) throws Exception {
         /* perform enqueue. If the priority class does not exist then create it
 
            Add a throttle here aswell to prevent overflow of higher priority of items
@@ -66,7 +66,7 @@ public class CustomPriorityQueue<T> {
      * @return
      * @throws Exception
      */
-    public Item<T> dequeue() throws Exception {
+    public synchronized Item<T> dequeue() throws Exception {
         /* Assumptions: If X+1 priority class is empty then go to the
         next priority class and so on until you find a non-empty class
         if there are none then return 
@@ -121,20 +121,21 @@ public class CustomPriorityQueue<T> {
         if (ret_val == null) {
             // case, x + 1 or any other lower priority not avail. Throw exception
             ret_val = new Item<>(-1, "\nNo X + 1 Or Lower Priority Available In The Queue !!!\n");
+            System.out.print("******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
         }
-        System.out.print("******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
+        
         Thread.sleep(3000);
         return ret_val;
     }
 
-    public boolean atMaxCapacity(){
+    public synchronized boolean atMaxCapacity(){
         // Check is the queue has reach maximum capacity
         return totalItems > capacity;
     }
-    public boolean isEmpty(){
+    public synchronized boolean isEmpty(){
         return totalItems == 0;
     }
-    public TreeMap<Integer, Queue<Item<T>>> returnQueue(){
+    public synchronized TreeMap<Integer, Queue<Item<T>>> returnQueue(){
         return queues;
     }
 }
