@@ -16,7 +16,7 @@ public class CustomPriorityQueue<T> {
     private Map<Integer, Integer> counters; // Counting Dequeues for Priority classes for Throttle Rate
     private Integer dequeueState = 1;
     public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[33m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
 
 
     /** 
@@ -105,7 +105,7 @@ public class CustomPriorityQueue<T> {
                 Item<T> item = queues.get(priority).poll();
                 counters.compute(priority,(k,v) -> (v + 1));
                 // System.out.print("Dequeueing " + priority + "\n");
-                System.out.print(ANSI_RED + priority + "  " + ANSI_RESET );
+                System.out.print(ANSI_YELLOW + priority + "  " + ANSI_RESET );
                 ret_val = item;
                 //System.out.print("Current Count for: " + priority + " is " + counters.get(priority) + "\n");
                 if (counters.get(priority) == throttleRate) { 

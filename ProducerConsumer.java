@@ -12,8 +12,8 @@ public class ProducerConsumer<T>  {
         this.queue = queue;
     }
 
-    public Item<T> produce() throws InterruptedException {
-        Thread.sleep(1000);
+    public Item<T> produce(boolean burst) throws InterruptedException {
+        Thread.sleep(500);
        
         while (true) {
 
@@ -21,56 +21,82 @@ public class ProducerConsumer<T>  {
                 while(queue.atMaxCapacity()) {
                     System.out.print("-------------QUEUE IS FULL-------WAITING FOR DEQUEU--------\n");
                     item = new Item<>(-1, "QUEUE FULL");
-                    wait();
+                    waitForItems();
                 }
-                
-                item = createItem();
-                try {
-                    queue.enqueue(item);
-                    //System.out.print(queue.returnQueue().get(item.getPriority()) + "\n");
-                } catch (Exception e) {
-                    e.printStackTrace();
+                item = createRandomItem();
+                if (burst) {
+                    enqueue();
+                    Thread.sleep(500);
+                } else {
+                    System.out.print("\n");
+                    enqueue();
+                    System.out.print("Single Enqueue\n");
+                    Thread.sleep(500);
+                    waitForItems();
+
                 }
                 //System.out.print("This should wake up the Dequeue\n");
                 
                 notifyAll();
             }
-                
+        }
+    }
 
+    private void enqueue() {
+        try {
+            queue.enqueue(item);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * @throws InterruptedException
      */
-    public Item<T> consume() throws InterruptedException {
+    public Item<T> consume(boolean burst) throws InterruptedException {
         
         synchronized(this) {
             Thread.sleep(100);
             while(true) {
                 
                 while(queue.isEmpty()){
-                    //Item<T> ret_val = new Item<>(-1, "Queue Empty!!!");
-                    try {
-                        System.out.print("----------QUEUE IS EMPTY---------WAITING FOR ITEMS---------\n");
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    waitForItems();
                 }
-                try {
-                    queue.dequeue().getPriority();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (burst) {
+                    Thread.sleep(1000);
+                    dequeue();
+                } else {
+                    System.out.print("\n");
+                    dequeue();
+                    System.out.print("Single Dequeue\n");
+                    waitForItems();
                 }
+                
                 notifyAll();
 
-        }
+            }
         }
        
     }
 
-    public Item<T> createItem() {
+    private void waitForItems() {
+        try {
+            System.out.print("----------QUEUE IS EMPTY---------WAITING FOR ITEMS---------\n");
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dequeue() {
+        try {
+            queue.dequeue().getPriority();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Item<T> createRandomItem() {
         try{
             rand = new Random();
             priority = 1 + rand.nextInt(10);
@@ -79,6 +105,5 @@ public class ProducerConsumer<T>  {
         }
         item = new Item<>(priority, "Priority");
         return item;
-
     }
 }
