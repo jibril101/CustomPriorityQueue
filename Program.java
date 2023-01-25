@@ -29,7 +29,7 @@ public class Program {
             
             public void run() {
                 try {
-                    pc.produce(true);
+                    pc.produce();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -41,7 +41,7 @@ public class Program {
             @Override
             public void run() {
                 try {
-                    pc.produce(false);
+                    pc.produce();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -54,8 +54,8 @@ public class Program {
             
             public void run() {
                 try {
-                    pc.consume(true);
-                } catch (Exception e) {
+                    pc.consume();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -66,8 +66,8 @@ public class Program {
             
             public void run() {
                 try {
-                    pc.consume(false);
-                } catch (Exception e) {
+                    pc.consume();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -77,11 +77,11 @@ public class Program {
         threadP2.start();
         threadC.start();
         threadD.start();
-        Thread.sleep(5000);
-        threadP1.join();
-        threadP2.join();
-        threadC.join();
-        threadD.join();
+        //Thread.sleep(5000);
+        // threadP1.join();
+        // threadP2.join();
+        // threadC.join();
+        // threadD.join();
     
 
     }

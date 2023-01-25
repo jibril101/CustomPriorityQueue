@@ -9,16 +9,16 @@ import java.util.NavigableSet;
 
 public class CustomPriorityQueue<T> {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     private final Integer capacity; // this is the pre-determined queue size, set when creating the priorityQueue
-    private Integer totalItems =0; // keep track of total items in queue
+    private Integer totalItems = 0; // keep track of total items in queue
     private Integer throttleRate = 2; // Generalize so that each priority class can have an arbitrary throttle rate
-    //private Integer throttle
     private TreeMap<Integer, Queue<Item<T>>> queues; // A Map of Queues based on Priority Classes
     private Map<Integer, Integer> counters; // Counting Dequeues for Priority classes for Throttle Rate
     private Integer dequeueState = 1;
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-
+    private final Object FULL_QUEUE = new Object();
+    private final Object EMPTY_QUEUE = new Object();
 
     /** 
      * @param capacity
@@ -28,20 +28,50 @@ public class CustomPriorityQueue<T> {
         counters = new HashMap<>();
         this.capacity = capacity;
     }
+
+    /**
+     * @throws InterruptedException
+     */
+    public void waitWhenFull() throws InterruptedException {
+        synchronized(FULL_QUEUE) {
+            FULL_QUEUE.wait();
+        }
+    }
+
+    public void notifyAllTheresSpaceInQueue(){
+        // Consumer calls this to wake up Producer threads, 
+        // If Consumer Acquires the FULL_QUEUE lock first, it will just descope and release
+        synchronized(FULL_QUEUE){
+            FULL_QUEUE.notifyAll();
+        }
+    }
+
+    /**
+     * @throws InterruptedException
+     */
+    public void waitWhenEmpty() throws InterruptedException {
+        synchronized(EMPTY_QUEUE){
+            EMPTY_QUEUE.wait();
+        }
+    }
+
+    public void notifyAllItemsExist() {
+        synchronized(EMPTY_QUEUE) {
+            EMPTY_QUEUE.notifyAll();
+        }
+    }
     
     /**
      * @param myItem
      */
     public synchronized void enqueue(Item<T> myItem) throws Exception {
-        /* perform enqueue. If the priority class does not exist then create it
-
-           Add a throttle here aswell to prevent overflow of higher priority of items
-           Note: If the rate of higher priority items entering the queue is higher than the rate of lower priority items
-           the lower priority Items will take a long time to exit in theory. I don't it will NEVER exit since we have in 
-           place a throttle for the dequeueing process.
-        */ 
         /***
          * Performs an Enqueue into the custom priority queue
+         * If the priority class does not exist then create it
+         * Add a throttle here aswell to prevent overflow of higher priority of items 
+         * Note: If the rate of higher priority items entering the queue is higher than the rate of lower priority items
+         * the lower priority Items will take a long time to exit in theory. I don't think it will NEVER exit since we have in 
+         * place a throttle for the dequeueing process but it wont be practical.
          */
 
         try{
@@ -52,10 +82,6 @@ public class CustomPriorityQueue<T> {
                 queues.put(priority, queue);
                 counters.put(priority,0);
             } else {
-                // enquedItems = counters.get(priority);
-                // if (condition) {
-                    
-                // }
                 queues.get(priority).add(myItem);
             }
             totalItems = totalItems + 1;
@@ -63,9 +89,8 @@ public class CustomPriorityQueue<T> {
             //System.out.print("Enqueueing " + priority + "\n");
             System.out.print(priority + "  ");
             
-        } catch(Exception exp) { // make a more speicfic exception
-            // maybe decrement semaphore count here
-            exp.printStackTrace();
+        } catch(Exception e) { // make a more speicfic exception
+            e.printStackTrace();
         }
 
     }
@@ -100,6 +125,7 @@ public class CustomPriorityQueue<T> {
             }
         } 
         catch (NullPointerException e) {
+            e.printStackTrace();
             System.out.print("Something went wrong when accessing priority levels");
         }
 
@@ -152,5 +178,25 @@ public class CustomPriorityQueue<T> {
     }
     public synchronized TreeMap<Integer, Queue<Item<T>>> returnQueue(){
         return queues;
+    }
+
+    public void setTotalItems(Integer totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public void setThrottleRate(Integer throttleRate) {
+        this.throttleRate = throttleRate;
+    }
+
+    public void setQueues(TreeMap<Integer, Queue<Item<T>>> queues) {
+        this.queues = queues;
+    }
+
+    public void setCounters(Map<Integer, Integer> counters) {
+        this.counters = counters;
+    }
+
+    public void setDequeueState(Integer dequeueState) {
+        this.dequeueState = dequeueState;
     }
 }
