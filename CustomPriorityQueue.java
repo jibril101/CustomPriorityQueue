@@ -64,7 +64,7 @@ public class CustomPriorityQueue<T> {
     /**
      * @param myItem
      */
-    public synchronized void enqueue(Item<T> myItem) throws Exception {
+    public synchronized void enqueue(Item<T> myItem) throws EnqueueException {
         /***
          * Performs an Enqueue into the custom priority queue
          * If the priority class does not exist then create it
@@ -74,24 +74,19 @@ public class CustomPriorityQueue<T> {
          * place a throttle for the dequeueing process but it wont be practical.
          */
 
-        try{
-            int priority = myItem.getPriority();
-            if (!queues.containsKey(priority)) {
-                LinkedList<Item<T>> queue = new LinkedList<>();
-                queue.add(myItem);
-                queues.put(priority, queue);
-                counters.put(priority,0);
-            } else {
-                queues.get(priority).add(myItem);
-            }
-            totalItems = totalItems + 1;
 
-            //System.out.print("Enqueueing " + priority + "\n");
-            System.out.print(priority + "  ");
-            
-        } catch(Exception e) { // make a more speicfic exception
-            e.printStackTrace();
+        int priority = myItem.getPriority();
+        if (!queues.containsKey(priority)) {
+            LinkedList<Item<T>> queue = new LinkedList<>();
+            queue.add(myItem);
+            queues.put(priority, queue);
+            counters.put(priority,0);
+        } else {
+            queues.get(priority).add(myItem);
         }
+        totalItems = totalItems + 1;
+        System.out.print(priority + "  ");
+        //System.out.print(Thread.currentThread().getName() + " ");
 
     }
 
@@ -99,34 +94,29 @@ public class CustomPriorityQueue<T> {
      * @return
      * @throws Exception
      */
-    public synchronized Item<T> dequeue() throws Exception {
+    public synchronized Item<T> dequeue() throws DequeueException {
         /* Assumptions: If X+1 priority class is empty then go to the
         next priority class and so on until you find a non-empty class
-        if there are none then return 
+        if you exhaust the priorities, reset dequeue state and return  
         */
 
         Item<T> ret_val = null;
-        if (totalItems == 0) {
-            ret_val = new Item<>(-1, "Queue Empty!!!");
-            return ret_val;
-        }
+        // if (totalItems == 0) {
+        //     ret_val = new Item<>(-1, "Queue Empty!!!");
+        //     return ret_val;
+        // }
 
-        // set priority class to start with
+        // set priority class to start with from dequeueState
         Set<Integer> priorityLevels = queues.keySet();
-        try {
-            if (!queues.containsKey(dequeueState)) {
-                // the next priority doesnt exist get the next higher key after dequeueState - 1 
-                NavigableSet<Integer> nonConstrainedQueues = queues.navigableKeySet().tailSet(dequeueState -1, false);  
-                if (!nonConstrainedQueues.isEmpty()) {
-                    priorityLevels = nonConstrainedQueues;
-                }
-            } else {
-                priorityLevels = queues.navigableKeySet().tailSet(dequeueState, true);
+      
+        if (!queues.containsKey(dequeueState)) {
+            // the next priority doesnt exist get the next higher key after dequeueState - 1 
+            NavigableSet<Integer> nonConstrainedQueues = queues.navigableKeySet().tailSet(dequeueState -1, false);  
+            if (!nonConstrainedQueues.isEmpty()) {
+                priorityLevels = nonConstrainedQueues;
             }
-        } 
-        catch (NullPointerException e) {
-            e.printStackTrace();
-            System.out.print("Something went wrong when accessing priority levels");
+        } else {
+            priorityLevels = queues.navigableKeySet().tailSet(dequeueState, true);
         }
 
         
@@ -156,16 +146,13 @@ public class CustomPriorityQueue<T> {
             }
         }
         if (ret_val == null) {
-            // case, x + 1 or any other lower priority not avail. Throw exception
+            // case, x + 1 or any other lower priority not avail. Reset dequeState 
             if (totalItems > 0) {
                 dequeueState = 1;
             }
             ret_val = new Item<>(-1, "\nNo X + 1 Or Lower Priority Available In The Queue !!!\n");
-            System.out.print("TOTAL ITEMS : " + totalItems + "\n");
-            System.out.print("\n******Nothing Left to DEQUEUE, figure out a way to exit gracefully or send in more Items******\n");
+            System.out.print("\n**Nothing Left to DEQUEUE, Go Check Higher Priority Classes *\n");
         }
-        
-        Thread.sleep(3000);
         return ret_val;
     }
 

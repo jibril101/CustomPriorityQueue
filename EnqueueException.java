@@ -1,6 +1,6 @@
-public class EnqueueException {
+public class EnqueueException extends Exception{
 
-    public EnqueueException() {
-        
+    public EnqueueException(String errorMsg) {
+        super(errorMsg);
     }
 }

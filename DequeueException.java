@@ -1,6 +1,7 @@
 public class DequeueException extends Exception {
 
-    public DequeueException() {
+    public DequeueException(String errorMsg) {
+        super(errorMsg);
     }
     
 }
