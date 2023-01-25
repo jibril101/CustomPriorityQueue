@@ -1,6 +1,7 @@
 
 import java.util.Random;
 
+
 public class ProducerConsumer<T>  {
 
     private CustomPriorityQueue<T> queue;
@@ -23,17 +24,17 @@ public class ProducerConsumer<T>  {
                     item = new Item<>(-1, "QUEUE FULL");
                     waitForItems();
                 }
+                
                 item = createRandomItem();
                 if (burst) {
-                    enqueue();
+                    enqueue(item);
                     Thread.sleep(500);
                 } else {
                     System.out.print("\n");
-                    enqueue();
+                    enqueue(item);
                     System.out.print("Single Enqueue\n");
                     Thread.sleep(500);
                     waitForItems();
-
                 }
                 //System.out.print("This should wake up the Dequeue\n");
                 
@@ -42,7 +43,7 @@ public class ProducerConsumer<T>  {
         }
     }
 
-    private void enqueue() {
+    private void enqueue(Item<T> item) {
         try {
             queue.enqueue(item);
         } catch (Exception e) {
@@ -56,7 +57,7 @@ public class ProducerConsumer<T>  {
     public Item<T> consume(boolean burst) throws InterruptedException {
         
         synchronized(this) {
-            Thread.sleep(100);
+            Thread.sleep(1000);
             while(true) {
                 
                 while(queue.isEmpty()){
@@ -71,17 +72,14 @@ public class ProducerConsumer<T>  {
                     System.out.print("Single Dequeue\n");
                     waitForItems();
                 }
-                
                 notifyAll();
-
             }
         }
-       
     }
 
     private void waitForItems() {
         try {
-            System.out.print("----------QUEUE IS EMPTY---------WAITING FOR ITEMS---------\n");
+            System.out.print("--------QUEUE IS EMPTY---WAITING FOR ITEMS-------\n");
             wait();
         } catch (InterruptedException e) {
             e.printStackTrace();

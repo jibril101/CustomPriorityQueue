@@ -12,6 +12,7 @@ public class CustomPriorityQueue<T> {
     private final Integer capacity; // this is the pre-determined queue size, set when creating the priorityQueue
     private Integer totalItems =0; // keep track of total items in queue
     private Integer throttleRate = 2; // Generalize so that each priority class can have an arbitrary throttle rate
+    //private Integer throttle
     private TreeMap<Integer, Queue<Item<T>>> queues; // A Map of Queues based on Priority Classes
     private Map<Integer, Integer> counters; // Counting Dequeues for Priority classes for Throttle Rate
     private Integer dequeueState = 1;
@@ -51,6 +52,10 @@ public class CustomPriorityQueue<T> {
                 queues.put(priority, queue);
                 counters.put(priority,0);
             } else {
+                // enquedItems = counters.get(priority);
+                // if (condition) {
+                    
+                // }
                 queues.get(priority).add(myItem);
             }
             totalItems = totalItems + 1;

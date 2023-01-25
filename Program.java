@@ -1,23 +1,29 @@
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
-public class main {
+public class Program {
     /**
      * @param <T>
      * @param args
      */
 
-    public final static String ANSI_RESET = "\u001B[0m";
-    public final static String ANSI_YELLOW = "\u001B[33m";
+    private final static String ANSI_RESET = "\u001B[0m";
+    private final static String ANSI_YELLOW = "\u001B[33m";
+    private static Logger LOG = Logger.getLogger(Program.class.getName());
+    private static StreamHandler handler = new StreamHandler(System.out, new MyFormatter());
+
     public static <T> void main(String[] args) {
         
-        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(5);
-        // Producer<T> producer = new Producer<>(queue);
-        // Consumer<T> consumer = new Consumer<>(queue);
-        // Thread thread1 = new Thread(producer);
-        // thread1.start();
-        // Thread thread2 = new Thread(consumer);
-        // thread2.start();
+        
+        LOG.addHandler(handler);
+        LOG.info(ANSI_YELLOW + "******************************************************" + "\n " +
+                                "\n\n**********YELLOW INDICATES DEQUEUE***********\n\n" +  
+                            "\n******************************************************" + ANSI_RESET + "\n");
 
-        ProducerConsumer pc = new ProducerConsumer<>(queue);
+        
+        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(5);
+
+        ProducerConsumer<T> pc = new ProducerConsumer<>(queue);
         
         Thread threadP1 = new Thread(new Runnable() {
             
@@ -29,6 +35,7 @@ public class main {
                 }
             }
         });
+
         Thread threadP2 = new Thread(new Runnable() {
 
             @Override
@@ -65,9 +72,7 @@ public class main {
                 }
             }
         });
-        System.out.print(ANSI_YELLOW + "******************************************************" + ANSI_RESET + "\n");
-        System.out.print(ANSI_YELLOW + "\n\n    **********YELLOW INDICATES DEQUEUE***********\n\n" + ANSI_RESET);
-        System.out.print(ANSI_YELLOW + "\n******************************************************" + ANSI_RESET + "\n");
+    
         threadP1.start();
         threadP2.start();
         threadC.start();
