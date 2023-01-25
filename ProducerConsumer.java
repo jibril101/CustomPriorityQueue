@@ -26,6 +26,8 @@ public class ProducerConsumer<T>  {
                 }
                 
                 item = createRandomItem();
+
+                
                 if (burst) {
                     enqueue(item);
                     Thread.sleep(500);

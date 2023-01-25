@@ -12,7 +12,7 @@ public class Program {
     private static Logger LOG = Logger.getLogger(Program.class.getName());
     private static StreamHandler handler = new StreamHandler(System.out, new MyFormatter());
 
-    public static <T> void main(String[] args) {
+    public static <T> void main(String[] args) throws InterruptedException {
         
         
         LOG.addHandler(handler);
@@ -21,7 +21,7 @@ public class Program {
                             "\n******************************************************" + ANSI_RESET + "\n");
 
         
-        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(5);
+        CustomPriorityQueue<T> queue = new CustomPriorityQueue<>(10);
 
         ProducerConsumer<T> pc = new ProducerConsumer<>(queue);
         
@@ -77,6 +77,11 @@ public class Program {
         threadP2.start();
         threadC.start();
         threadD.start();
+        Thread.sleep(5000);
+        threadP1.join();
+        threadP2.join();
+        threadC.join();
+        threadD.join();
     
 
     }
